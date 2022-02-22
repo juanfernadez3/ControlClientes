@@ -1,0 +1,301 @@
+﻿@page "/Clientes"
+
+@using ControlClientes.Entidades;
+@using ControlClientes.BLL;
+@using ControlClientes.DAL;
+@using Blazored.Toast;
+@using Blazored.Toast.Services;
+
+@inject IToastService toastService
+
+
+<EditForm Model="cliente" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h3>
+                Registro Personas
+            </h3>
+        </div>
+
+        <div class="card-body">
+            <form>
+                @*PerosnasID*@
+                <div class="form-row" align-items-center>
+                    <div class="col">
+                        <div class="form-group">
+                            <label>
+                                PersonasID:
+                            </label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="cliente.ClienteId" class="form-control col-4" />
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-Text" @onclick="Buscar">
+                                        <span class="oi oi-zoom-in" />Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Nombre*@
+                <div>
+                    <label>
+                        Nombre:
+                    </label>
+                    <InputText @bind-Value="cliente.Nombre" class="form-control" />
+                    <ValidationMessage For="@(() => cliente.Nombre)" />
+                    <small id="NameInLineHelper" class="text-muted">
+                        El campo Nombre debe de estar lleno.
+                    </small>
+                </div>
+
+                @*Télefono*@
+                <div>
+                    <label>
+                        Télefono:
+                    </label>
+                    <InputText @bind-Value="cliente.Telefono" class="form-control" />
+                    <ValidationMessage For="@(() => cliente.Telefono)" />
+                    <small id="TelefonoLineHelper" class="text-muted">
+                        El campo Télefono debe de estar lleno.
+                    </small>
+                </div>
+
+                @*Cédula*@
+                <div>
+                    <label>
+                        Cédula:
+                    </label>
+                    <InputText @bind-Value="cliente.Cedula" class="form-control" />
+                    <ValidationMessage For="@(() => cliente.Cedula)" />
+                    <small id="CedulaLineHelper" class="text-muted">
+                        El campo Cédula debe de estar lleno.
+                    </small>
+                </div>
+
+               
+                @*Fecha de Nacimineto*@
+                <div>
+                    <label>
+                        Fecha de Nacimineto:
+                    </label>
+                    <InputDate @bind-Value="cliente.FechaNacimineto" class="form-control" />
+                    <ValidationMessage For="@(() => cliente.FechaNacimineto)" />
+                    <small id="FechaNacimientoLineHelper" class="text-muted">
+                        El formato es Mes/Dia/Año
+                    </small>
+                </div>
+
+                @*Datos del detalle*@
+            <div class="row">
+                <div class="form-group col">
+                    <label>Id</label>
+                    <InputNumber @bind-Value="Direccion.Id" class="form-control"  />
+                </div>
+
+                @*Calle*@
+                <div class="form-group col">
+                    <label>Calle</label>
+                    <div class="input-group">
+                        <InputText @bind-Value="Direccion.Calle" class="form-control"  />
+                        <ValidationMessage For="@(() => Direccion.Calle)" />
+                    </div>
+                    <small id="CalleInLineHelper class=" text-muted"">
+                        El campo Calle debe de estar lleno.
+                    </small>
+                </div>
+
+                @*NumeroCasa*@
+                <div class="form-group col">
+                    <label>Numero Casa</label>
+                    <div class="input-group">
+                        <InputText @bind-Value="Direccion.NumeroCasa" class="form-control"  />
+                        <ValidationMessage For="(() => Direccion.NumeroCasa)" />
+                    </div>
+                    <small id="NumeroCasaInLineHelper">
+                        Numero Casa
+                    </small>
+                </div>
+
+                @*Ciudad*@
+                <div class="form-group col">
+                    <label>Ciudad</label>
+                    <div class="input-group">
+                        <InputText @bind-Value="Direccion.Ciudad" class="form-control"  />
+                        <ValidationMessage For="(() => Direccion.Ciudad)" />
+                    </div>
+                    <small id="CiudadInLineHelper">
+                        Ciudad
+                    </small>
+                </div>
+
+                @*NumeroCasa*@
+                <div class="form-group col">
+                    <label>Provincia</label>
+                    <div class="input-group">
+                        <InputText @bind-Value="Direccion.Provincia" class="form-control"  />
+                        <ValidationMessage For="(() => Direccion.Provincia)" />
+                    </div>
+                    <small id="ProvinciaInLineHelper">
+                        Provincia
+                    </small>
+                </div>
+                @*Municipio*@
+                <div class="form-group col">
+                    <label>Municipio</label>
+                    <div class="input-group">
+                        <InputText @bind-Value="Direccion.Municipio" class="form-control"  />
+                        <ValidationMessage For="(() => Direccion.Municipio)" />
+                    </div>
+                    <small id="MunicipioInLineHelper">
+                        Municipio
+                    </small>
+                </div>
+                @*Pais*@
+                <div class="form-group col">
+                    <label>Pais</label>
+                    <div class="input-group">
+                        <InputText @bind-Value="Direccion.Pais" class="form-control"  />
+                        <ValidationMessage For="(() => Direccion.Pais)" />
+                    </div>
+                    <small id="PaisInLineHelper">
+                        Pais
+                    </small>
+                </div>
+            </div>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-primary" @onclick="AgregarAlDetalle">
+                            <i class="oi oi-plus" aria-hidden="true" /> Agregar
+                        </button>
+                    </div>
+
+                @*Detallle*@
+                <table class="table" style="border-bottom: 1px groove;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Calle</th>
+                            <th scope="col">Numero Casa</th>
+                            <th scope="col">Provinvia</th>
+                            <th scope="col">municipio</th>
+                            <th scope="col">Pais</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in cliente.Direciones)
+                        {
+                            <tr>
+                                <td>@item.Calle</td>
+                                <td>@item.NumeroCasa</td>
+                                <td>@item.Provincia</td>
+                                <td>@item.Municipio</td>
+                                <td>@item.Pais</td>
+                                <td><button type="button" class="btn btn-danger" @onclick="(() => EliminarDetalle(item))">Remover</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </form>
+        </div>
+
+        @*Buttons*@
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">
+                    <span class="oi oi-plus"></span> Nuevo
+                </button>
+
+                <button type="submit" class="btn btn-lg btn-success" @onclick="Guardar">
+                    <span class="oi oi-clipboard" aria-hidden="true"></span> Guardar
+                </button>
+
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">
+                    <i class="fa fa-trash"></i>
+                    <span class="oi oi-trash"></span> Eliminar
+                </button>
+
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+
+    public int DireccionesId = 0;
+    public int ClienteID = 0;
+
+    Clientes cliente = new Clientes();
+    Direccion Direccion = new Direccion();
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+        Buscar();
+    }
+
+    private void Nuevo()
+    {
+        cliente = new Clientes();
+        Direccion = new Direccion();
+    }
+
+
+    private void Guardar()
+    {
+        bool guardado;
+        guardado = ClientesBLL.Guardar(cliente);
+         
+        if (guardado)
+        {
+            Nuevo();
+        }
+    }
+
+    private void Buscar()
+    {
+        if (cliente.ClienteId > 0)
+        {
+            var encontrado = ClientesBLL.Buscar(cliente.ClienteId);
+            if (encontrado != null)
+                this.cliente = encontrado;
+        }
+    }
+
+    private void Eliminar()
+    {
+        bool eliminado;
+
+        eliminado = ClientesBLL.Eliminar(cliente.ClienteId);
+
+        if (eliminado)
+        {
+            Nuevo();
+        }
+    }
+
+    private void EliminarDetalle(Direccion detalle)
+    {
+        cliente.Direciones.Remove(detalle);
+    }
+
+    private void AgregarAlDetalle()
+    {
+        cliente.Direciones.Add(new Direccion
+        {
+            Id = 0,
+            ClienteId = cliente.ClienteId,
+            Calle = Direccion.Calle,
+            NumeroCasa = Direccion.NumeroCasa,
+            Ciudad = Direccion.Ciudad,
+            Provincia = Direccion.Provincia,
+            Municipio = Direccion.Municipio,
+            Pais = Direccion.Pais
+
+        }) ;
+    }
+
+}

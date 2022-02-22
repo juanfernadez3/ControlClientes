@@ -1,0 +1,43 @@
+﻿@page "/Consulta"
+@using ControlClientes.Entidades;
+@using ControlClientes.BLL;
+
+<h3>Consulta Clientes </h3>
+
+@if (clientes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ClienteId</th>
+                <th>Nombre</th>
+                <th>Telefono</th>
+                <th>Cedula</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cliente in clientes)
+            {
+            <tr>
+                <td>@cliente.ClienteId</td>
+                <td>@cliente.Nombre</td>
+                <td>@cliente.Telefono</td>
+                <td>@cliente.Cedula</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+
+    private List<Clientes> clientes = new List<Clientes>();
+
+    protected override void OnInitialized()
+    {
+        clientes = ClientesBLL.GetList(x => true);
+    }
+}
